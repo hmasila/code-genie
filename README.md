@@ -1,16 +1,24 @@
-# Leetcode Questions Scraper and GitHub Contribution Graph Updater
+# Leetcode Questions Scraper For GitHub Contribution Graph
+
+<p align="center">
+  <img src="https://static.vecteezy.com/system/resources/previews/005/161/828/original/cartoon-genie-appear-from-magic-lamp-free-vector.jpg" width=50%   height=50% style="align: center">
+</p>
 
 Leetcode Questions Scraper is a simple scrapper built on top of Selenium that fetches all the problems from leetcode and write as md files. It then commits each file with a random date in a range that you provide so that you can push it to GitHub and improve your contribution graph.
 
-Inspiration for leetcode scraper [LeetCode-Questions-Scraper](https://github.com/Bishalsarang/Leetcode-Questions-Scraper)
+## Inspirations
+[LeetCode-Questions-Scraper](https://github.com/Bishalsarang/Leetcode-Questions-Scraper)
 
-Inspiration for github contribution graph [github-activity-generator](https://github.com/Shpota/github-activity-generator)
+[Github Activity Generator](https://github.com/Shpota/github-activity-generator)
+
+## How it works
 
 Although leetcode doesn't provide an official API to fetch all the list of problems, we can use the API url  [https://leetcode.com/api/problems/algorithms/](https://leetcode.com/api/problems/algorithms/) used by leetcode internally to fetch problems that returns a json file containing info about problems.
 
 We can build links to each problem as
 
-"https://leetcode.com/problems/" + question_title_slug
+`"https://leetcode.com/problems/" + question_title_slug`
+
 After getting the problem link we can fetch the content from the page using selenium (as Leetcode is built using react where content is rendered using JS we can't use lightweight library like requests).
 
 ## Requirements
