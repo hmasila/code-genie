@@ -6,11 +6,11 @@ import json
 import time
 import random
 import argparse
+from subprocess import Popen
 
 import bs4
 import colorama
 import requests
-from subprocess import Popen
 from colorama import Back, Fore
 
 from selenium import webdriver
@@ -60,13 +60,13 @@ def download(problem_num, url, title, solution_slug, title_slug, commit_date):
         if not os.path.isdir(directory):
             os.mkdir(directory)
 
-        with open(file_path, "ab") as f:
+        with open(file_path, "wb") as f:
             f.write(markdown.encode(encoding="utf-8"))
 
-        # # commit changes
-        # run(['git', 'add', file_path])
-        # run(['git', 'commit', '-m', title,
-        # '--date', commit_date])
+        # commit changes
+        run(['git', 'add', file_path])
+        run(['git', 'commit', '-m', title,
+        '--date', commit_date])
 
         # Update upto which the problem is downloaded
         update_tracker('track.conf', problem_num)
@@ -108,7 +108,7 @@ def run(commands):
 
 def update_tracker(file_name, problem_num):
      """
-
+    Update the tracker number
      """
      with open(file_name, "w") as f:
          f.write(str(problem_num))
@@ -116,7 +116,7 @@ def update_tracker(file_name, problem_num):
 
 def read_tracker(file_name):
     """
-
+    Read the tracker number
     """
     with open(file_name, "r") as f:
         return int(f.readline())
@@ -125,8 +125,12 @@ def html_to_markdown(html):
     # Replace opening/closing <div> tags with empty string
     html = re.sub(r'<div.*?>|</div>', '', html)
 
+    html = re.sub(r'<strong>Input:</strong>', '\nInput:', html)
+    html = re.sub(r'<strong>Output:</strong>',  'Output:', html)
+    html = re.sub(r'<strong>Explanation:</strong>', 'Explanation:', html)
     # Replace <strong> and <code> tags with their markdown equivalents
     html = re.sub(r'<strong>(.*?)</strong>', r'**\1**', html)
+    html = re.sub(r'<strong class="example">(.*?)</strong>', r'**\1**', html)
     html = re.sub(r'<code>(.*?)</code>', r'`\1`', html)
 
     # Replace <ul> and <li> tags with their markdown equivalents
@@ -134,8 +138,7 @@ def html_to_markdown(html):
     html = re.sub(r'<li.*?>(.*?)</li>', r'* \1\n', html)
 
     # Replace <pre> tags with their markdown equivalents
-    # html = re.sub(r'<pre.*?>|</pre>', r'* \1\n', html)
-    # html = re.sub(r'<strong class="example">(.*?)</strong>', r'```\n\1\n```', html)
+    html = re.sub(r'<pre>|</pre>', r'```', html)
 
     # Replace &lt with <
     html = re.sub(r'&lt', '<', html)
@@ -143,8 +146,8 @@ def html_to_markdown(html):
     # Replace &gt with >
     html = re.sub(r'&gt', '>', html)
 
-    # Replace remaining <p> tags with empty string
-    html = re.sub(r'<p.*?>|</p>', '', html)
+    # Replace remaining <p> tags with line break
+    html = re.sub(r'<p.*?>|</p>', '<br />', html)
 
     return html.strip()
 
